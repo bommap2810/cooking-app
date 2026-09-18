@@ -135,6 +135,36 @@ function escapeHtml(s) {
   }[c]));
 }
 
+// Xuất/nhập toàn bộ dữ liệu qua prompt() — dùng để chuyển dữ liệu giữa 2 bản
+// (VD: bản chạy trên mạng LAN cũ và bản deploy mới), vì đó là 2 origin khác
+// nhau nên localStorage không tự đồng bộ. Dùng prompt() thay vì Clipboard API
+// vì HTTP trên mạng LAN không phải secure context, clipboard API sẽ bị chặn.
+document.getElementById("btn-export").addEventListener("click", () => {
+  const json = JSON.stringify(dishes);
+  prompt("Chọn hết đoạn dưới đây, copy rồi dán qua app mới ở nút Nhập (⇩):", json);
+});
+
+document.getElementById("btn-import").addEventListener("click", () => {
+  const text = prompt("Dán dữ liệu đã copy từ app cũ vào đây:");
+  if (!text) return;
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    alert("Dữ liệu không hợp lệ (không đọc được JSON).");
+    return;
+  }
+  if (!Array.isArray(parsed)) {
+    alert("Dữ liệu không hợp lệ (phải là danh sách món ăn).");
+    return;
+  }
+  if (!confirm(`Thay thế toàn bộ ${dishes.length} món hiện tại bằng ${parsed.length} món vừa nhập?`)) return;
+  dishes = parsed;
+  saveDishes(dishes);
+  renderMenu();
+  alert("Đã nhập xong!");
+});
+
 document.getElementById("btn-add-dish").addEventListener("click", () => {
   const dish = { id: uid(), name: "", emoji: "🍽️", ingredients: [], steps: [] };
   dishes.push(dish);

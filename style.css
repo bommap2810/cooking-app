@@ -51,6 +51,14 @@ html, body {
 .topbar h1 { margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
 .subtitle { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
 
+.menu-bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.menu-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
 .detail-bar, .cook-bar {
   display: flex;
   align-items: center;
