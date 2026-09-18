@@ -147,6 +147,30 @@ document.getElementById("btn-transfer").addEventListener("click", () => {
   location.href = target.replace(/\/?$/, "/") + "#import=" + encoded;
 });
 
+// Lấy toàn bộ dữ liệu ra để gửi đi (VD: gửi cho người hỗ trợ debug) — ưu tiên
+// share sheet của iOS, tiếp theo clipboard, cuối cùng mới hiện prompt để copy tay.
+document.getElementById("btn-share-data").addEventListener("click", async () => {
+  const json = JSON.stringify(dishes);
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: "Dữ liệu Bếp Của Tôi", text: json });
+      return;
+    } catch {
+      // người dùng bấm huỷ share sheet — thử cách khác bên dưới
+    }
+  }
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(json);
+      alert("Đã copy vào clipboard!");
+      return;
+    } catch {
+      // clipboard bị chặn (thường do http không phải secure context) — fallback prompt
+    }
+  }
+  prompt("Chọn hết đoạn dưới đây và copy:", json);
+});
+
 function importFromHash() {
   const match = location.hash.match(/^#import=(.+)$/);
   if (!match) return;
