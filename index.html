@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+<title>Bếp Của Tôi</title>
+
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#E2572B" />
+<link rel="apple-touch-icon" href="icons/icon-180.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Bếp Của Tôi" />
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ===== MENU SCREEN ===== -->
+  <section id="screen-menu" class="screen">
+    <header class="topbar">
+      <h1>Bếp Của Tôi</h1>
+      <p class="subtitle">Món ăn của bạn</p>
+    </header>
+
+    <div id="dish-grid" class="dish-grid"></div>
+
+    <button id="btn-add-dish" class="fab" aria-label="Thêm món mới">+</button>
+  </section>
+
+  <!-- ===== DISH DETAIL SCREEN ===== -->
+  <section id="screen-detail" class="screen hidden">
+    <header class="topbar detail-bar">
+      <button id="btn-back" class="icon-btn" aria-label="Quay lại">←</button>
+      <input id="dish-emoji-input" class="emoji-input-compact" maxlength="2" aria-label="Biểu tượng món ăn" />
+      <input id="dish-name-input" class="dish-name-input" placeholder="Tên món ăn" />
+      <button id="btn-delete-dish" class="icon-btn danger" aria-label="Xoá món">🗑</button>
+    </header>
+
+    <div class="content-scroll">
+      <section class="block">
+        <div class="block-head">
+          <h2>Nguyên liệu</h2>
+          <button id="btn-add-ingredient" class="pill-btn">+ Thêm</button>
+        </div>
+        <ul id="ingredient-list" class="ingredient-list"></ul>
+      </section>
+
+      <section class="block">
+        <div class="block-head">
+          <h2>Các bước thực hiện</h2>
+          <button id="btn-add-step" class="pill-btn">+ Thêm</button>
+        </div>
+        <ol id="step-list" class="step-list"></ol>
+      </section>
+
+      <div class="action-row">
+        <button id="btn-go-shopping" class="shop-btn">Đi chợ 🛒</button>
+        <button id="btn-start-cook" class="cook-btn">Bắt đầu nấu 🍳</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STEP-BY-STEP COOK MODE ===== -->
+  <section id="screen-cook" class="screen hidden">
+    <header class="topbar cook-bar">
+      <button id="btn-exit-cook" class="icon-btn" aria-label="Đóng">✕</button>
+      <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+      <span id="cook-counter" class="cook-counter"></span>
+    </header>
+
+    <div class="cook-body">
+      <div id="cook-step-num" class="cook-step-num">1</div>
+      <p id="cook-step-text" class="cook-step-text"></p>
+    </div>
+
+    <div class="cook-nav">
+      <button id="btn-prev-step" class="nav-btn ghost">◀ Trước</button>
+      <button id="btn-next-step" class="nav-btn primary">Xong bước này ▶</button>
+    </div>
+  </section>
+
+  <!-- ===== SHOPPING SCREEN ===== -->
+  <section id="screen-shopping" class="screen hidden">
+    <header class="topbar detail-bar">
+      <button id="btn-back-shopping" class="icon-btn" aria-label="Quay lại">←</button>
+      <h1 id="shopping-title" class="shopping-title">Đi chợ</h1>
+      <button id="btn-reset-shopping" class="pill-btn reset-btn" aria-label="Bỏ chọn hết">↺ Đặt lại</button>
+    </header>
+
+    <div class="shopping-progress-row">
+      <div class="progress-track"><div id="shopping-progress-fill" class="progress-fill"></div></div>
+      <span id="shopping-counter" class="cook-counter"></span>
+    </div>
+
+    <ul id="shopping-list" class="shopping-list"></ul>
+  </section>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
