@@ -135,35 +135,38 @@ function escapeHtml(s) {
   }[c]));
 }
 
-// Xuất/nhập toàn bộ dữ liệu qua prompt() — dùng để chuyển dữ liệu giữa 2 bản
-// (VD: bản chạy trên mạng LAN cũ và bản deploy mới), vì đó là 2 origin khác
-// nhau nên localStorage không tự đồng bộ. Dùng prompt() thay vì Clipboard API
-// vì HTTP trên mạng LAN không phải secure context, clipboard API sẽ bị chặn.
-document.getElementById("btn-export").addEventListener("click", () => {
-  const json = JSON.stringify(dishes);
-  prompt("Chọn hết đoạn dưới đây, copy rồi dán qua app mới ở nút Nhập (⇩):", json);
+// Chuyển dữ liệu sang app ở origin khác (VD: bản LAN cũ -> bản deploy mới) qua
+// URL hash, vì mỗi origin có localStorage riêng không tự đồng bộ. 1 chạm: mở
+// thẳng app đích kèm dữ liệu trong hash, app đích tự đọc và nhập khi tải lên.
+const DEFAULT_TRANSFER_TARGET = "https://bommap2810.github.io/cooking-app/";
+
+document.getElementById("btn-transfer").addEventListener("click", () => {
+  const target = prompt("Mở app nào để chuyển dữ liệu này sang?", DEFAULT_TRANSFER_TARGET);
+  if (!target) return;
+  const encoded = encodeURIComponent(JSON.stringify(dishes));
+  location.href = target.replace(/\/?$/, "/") + "#import=" + encoded;
 });
 
-document.getElementById("btn-import").addEventListener("click", () => {
-  const text = prompt("Dán dữ liệu đã copy từ app cũ vào đây:");
-  if (!text) return;
+function importFromHash() {
+  const match = location.hash.match(/^#import=(.+)$/);
+  if (!match) return;
+  history.replaceState(null, "", location.pathname + location.search);
   let parsed;
   try {
-    parsed = JSON.parse(text);
+    parsed = JSON.parse(decodeURIComponent(match[1]));
   } catch {
-    alert("Dữ liệu không hợp lệ (không đọc được JSON).");
+    alert("Dữ liệu chuyển tới không hợp lệ.");
     return;
   }
   if (!Array.isArray(parsed)) {
-    alert("Dữ liệu không hợp lệ (phải là danh sách món ăn).");
+    alert("Dữ liệu chuyển tới không hợp lệ.");
     return;
   }
-  if (!confirm(`Thay thế toàn bộ ${dishes.length} món hiện tại bằng ${parsed.length} món vừa nhập?`)) return;
+  if (!confirm(`Thay thế toàn bộ ${dishes.length} món hiện tại bằng ${parsed.length} món vừa chuyển tới?`)) return;
   dishes = parsed;
   saveDishes(dishes);
   renderMenu();
-  alert("Đã nhập xong!");
-});
+}
 
 document.getElementById("btn-add-dish").addEventListener("click", () => {
   const dish = { id: uid(), name: "", emoji: "🍽️", ingredients: [], steps: [] };
@@ -445,6 +448,7 @@ function renderShopping(dish) {
 }
 
 // ---------- boot ----------
+importFromHash();
 renderMenu();
 showScreen(screenMenu);
 
